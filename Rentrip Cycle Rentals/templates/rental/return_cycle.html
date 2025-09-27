@@ -1,0 +1,116 @@
+{% extends 'rental/base.html' %}
+
+
+{% block title %}Return Cycle - PedalPower Rentals{% endblock %}
+
+{% block content %}
+<section class="min-h-screen py-20">
+    <div class="container mx-auto px-6">
+        <div class="max-w-2xl mx-auto">
+            <div class="glass-effect rounded-2xl p-8">
+                <div class="text-center mb-8">
+                    <div class="bg-orange-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-undo text-2xl text-white"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mb-2">Return Cycle</h1>
+                    <p class="text-white/80">Complete your rental and return the cycle</p>
+                </div>
+                
+                <!-- Rental Summary -->
+                <div class="bg-white/10 rounded-lg p-6 mb-8">
+                    <h2 class="text-xl font-semibold text-white mb-4">Rental Summary</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-white/80">Cycle:</span>
+                            <span class="text-white font-semibold">{{ rental.cycle.name }} - {{ rental.cycle.model }}</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-white/80">Start Time:</span>
+                            <span class="text-white font-semibold">{{ rental.start_time|date:"M d, Y H:i" }}</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-white/80">Current Time:</span>
+                            <span class="text-white font-semibold" id="currentTime"></span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <span class="text-white/80">Rate:</span>
+                            <span class="text-white font-semibold">${{ rental.cycle.rent_per_hour }}/hour</span>
+                        </div>
+                        
+                        <hr class="border-white/20">
+                        
+                        <div class="flex items-center justify-between text-lg">
+                            <span class="text-white font-semibold">Estimated Total:</span>
+                            <span class="text-green-300 font-bold" id="estimatedCost">Calculating...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Return Confirmation -->
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <div class="bg-yellow-500/20 border border-yellow-400/30 rounded-lg p-4">
+                        <h3 class="text-white font-semibold mb-2 flex items-center">
+                            <i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i>
+                            Before Returning
+                        </h3>
+                        <ul class="text-white/80 text-sm space-y-1">
+                            <li>• Ensure the cycle is parked in a safe location</li>
+                            <li>• Return all provided equipment (helmet, lock, repair kit)</li>
+                            <li>• Report any damages or issues immediately</li>
+                            <li>• Take a photo of the cycle's final location if requested</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3 p-4 bg-white/10 rounded-lg">
+                        <input type="checkbox" id="confirm" required 
+                               class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="confirm" class="text-white">
+                            I confirm that I have returned the cycle and all equipment in good condition
+                        </label>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <a href="{% url 'my_rentals' %}" 
+                           class="bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg text-center transition-colors duration-300 font-semibold">
+                            <i class="fas fa-arrow-left mr-2"></i>Cancel
+                        </a>
+                        
+                        <button type="submit" 
+                                class="bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-semibold transition-colors duration-300 transform hover:scale-105">
+                            <i class="fas fa-check mr-2"></i>Return Cycle
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Update current time and calculate estimated cost
+function updateTimeAndCost() {
+    const now = new Date();
+    const startTime = new Date('{{ rental.start_time|date:"c" }}');
+    const hourlyRate = { rental_cyclesrent_per_hour };
+    // Update current time display
+    document.getElementById('currentTime').textContent = now.toLocaleString();
+    
+    // Calculate hours elapsed
+    const hoursElapsed = (now - startTime) / (1000 * 60 * 60);
+    const estimatedCost = (hoursElapsed * hourlyRate).toFixed(2);
+    
+    // Update estimated cost
+    document.getElementById('estimatedCost').textContent = `$${estimatedCost}`;
+}
+
+// Update every second
+setInterval(updateTimeAndCost, 1000);
+updateTimeAndCost(); // Initial call
+</script>
+{% endblock %}

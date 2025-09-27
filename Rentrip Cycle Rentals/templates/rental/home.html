@@ -1,0 +1,182 @@
+{% extends 'rental/base.html' %}
+
+
+{% block title %}Home - Rentrip Cycle Rentals{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <!-- Background Animation -->
+    <div class="absolute inset-0 opacity-20">
+        <div class="animate-float absolute top-20 left-10">
+            <i class="fas fa-bicycle text-6xl text-white"></i>
+        </div>
+        <div class="animate-float absolute top-40 right-20" style="animation-delay: -2s;">
+            <i class="fas fa-route text-4xl text-white"></i>
+        </div>
+        <div class="animate-float absolute bottom-40 left-20" style="animation-delay: -4s;">
+            <i class="fas fa-mountain text-5xl text-white"></i>
+        </div>
+    </div>
+    
+    <div class="container mx-auto px-6 text-center relative z-10">
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-pulse">
+            Welcome to <span class="text-blue-300">Rentrip Cycle Rentals</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto">
+            Discover the city on two wheels with our premium cycle rental service. 
+            Adventure awaits around every corner!
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'cycles' %}" class="glass-effect hover-glow px-8 py-4 rounded-lg text-white font-semibold text-lg transition-all duration-300">
+                <i class="fas fa-bicycle mr-2"></i>Browse Cycles
+            </a>
+            <a href="{% url 'about' %}" class="border-2 border-white/30 hover:bg-white/10 px-8 py-4 rounded-lg text-white font-semibold text-lg transition-all duration-300">
+                <i class="fas fa-info-circle mr-2"></i>Learn More
+            </a>
+        </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <i class="fas fa-chevron-down text-white text-2xl"></i>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Why Choose Rentrip Cycle Rentals?</h2>
+            <p class="text-xl text-white/80 max-w-2xl mx-auto">
+                We provide the best cycle rental experience with premium cycles and exceptional service.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="glass-effect p-8 rounded-xl text-center hover-glow">
+                <div class="bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-bicycle text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-semibold text-white mb-4">Premium Cycles</h3>
+                <p class="text-white/80">
+                    Our fleet consists of high-quality, well-maintained cycles suitable for all terrains and preferences.
+                </p>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="glass-effect p-8 rounded-xl text-center hover-glow">
+                <div class="bg-green-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-clock text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-semibold text-white mb-4">Flexible Hours</h3>
+                <p class="text-white/80">
+                    Rent by the hour, day, or week. We offer flexible rental periods to suit your schedule.
+                </p>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="glass-effect p-8 rounded-xl text-center hover-glow">
+                <div class="bg-purple-500 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-shield-alt text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-semibold text-white mb-4">Safe & Secure</h3>
+                <p class="text-white/80">
+                    All our cycles come with safety equipment and insurance coverage for your peace of mind.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Cycles Section -->
+{% if featured_cycles %}
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Featured Cycles</h2>
+            <p class="text-xl text-white/80 max-w-2xl mx-auto">
+                Check out some of our most popular cycles available for rent.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for cycle in featured_cycles %}
+            <div class="cycle-card glass-effect rounded-xl overflow-hidden">
+                {% if cycle.image %}
+                    <img src="{{ cycle.image.url }}" alt="{{ cycle.name }}" class="w-full h-48 object-cover">
+                {% else %}
+                    <div class="w-full h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-bicycle text-6xl text-white"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="p-6">
+                    <h3 class="text-2xl font-semibold text-white mb-2">{{ cycle.name }}</h3>
+                    <p class="text-white/80 mb-4">{{ cycle.model }}</p>
+                    {% if cycle.description %}
+                        <p class="text-white/70 mb-4 text-sm">{{ cycle.description|truncatewords:15 }}</p>
+                    {% endif %}
+                    
+                    <div class="flex items-center justify-between">
+                        <span class="text-2xl font-bold text-blue-300">${{ cycle.rent_per_hour }}/hr</span>
+                        {% if cycle.available %}
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">Available</span>
+                        {% else %}
+                            <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm">Rented</span>
+                        {% endif %}
+                    </div>
+                    
+                    {% if user.is_authenticated and cycle.available %}
+                        <a href="{% url 'book_cycle' cycle.id %}" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg mt-4 block text-center transition-colors duration-300">
+                            <i class="fas fa-calendar-plus mr-2"></i>Book Now
+                        </a>
+                    {% elif not user.is_authenticated %}
+                        <a href="{% url 'login' %}" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg mt-4 block text-center transition-colors duration-300">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Login to Book
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'cycles' %}" class="glass-effect hover-glow px-8 py-4 rounded-lg text-white font-semibold text-lg transition-all duration-300 inline-block">
+                <i class="fas fa-eye mr-2"></i>View All Cycles
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <div class="glass-effect rounded-2xl p-12 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Start Your Adventure?</h2>
+            <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                Join thousands of satisfied customers who have explored the city with Rentrip Cycle Rentals. 
+                Your next adventure is just a click away!
+            </p>
+            
+            {% if not user.is_authenticated %}
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{% url 'signup' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-300">
+                        <i class="fas fa-user-plus mr-2"></i>Sign Up Now
+                    </a>
+                    <a href="{% url 'cycles' %}" class="border-2 border-white/30 hover:bg-white/10 px-8 py-4 rounded-lg text-white font-semibold text-lg transition-all duration-300">
+                        <i class="fas fa-bicycle mr-2"></i>Browse Cycles
+                    </a>
+                </div>
+            {% else %}
+                <a href="{% url 'cycles' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-300 inline-block">
+                    <i class="fas fa-bicycle mr-2"></i>Browse Available Cycles
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

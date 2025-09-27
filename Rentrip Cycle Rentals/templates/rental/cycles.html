@@ -1,0 +1,187 @@
+{% extends 'rental/base.html' %}
+
+
+{% block title %}Our Cycles - Rentrip Cycle Rentals{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">Our Cycle Collection</h1>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto">
+                Choose from our diverse fleet of premium cycles. Whether you're commuting, touring, or seeking adventure, 
+                we have the perfect cycle for your journey.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Cycles Grid -->
+<section class="pb-20">
+    <div class="container mx-auto px-6">
+        {% if cycles %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for cycle in cycles %}
+                <div class="cycle-card glass-effect rounded-xl overflow-hidden">
+                    {% if cycle.image %}
+                        <img src="{{ cycle.image.url }}" alt="{{ cycle.name }}" class="w-full h-64 object-cover">
+                    {% else %}
+                        <div class="w-full h-64 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-bicycle text-8xl text-white"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div>
+                                <h3 class="text-2xl font-semibold text-white mb-1">{{ cycle.name }}</h3>
+                                <p class="text-white/80">{{ cycle.model }}</p>
+                            </div>
+                            {% if cycle.available %}
+                                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                                    <i class="fas fa-check-circle mr-1"></i>Available
+                                </span>
+                            {% else %}
+                                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                                    <i class="fas fa-times-circle mr-1"></i>Rented
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if cycle.description %}
+                            <p class="text-white/70 mb-4 text-sm">{{ cycle.description }}</p>
+                        {% endif %}
+                        
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="text-3xl font-bold text-blue-300">
+                                ${{ cycle.rent_per_hour }}<span class="text-lg text-white/60">/hour</span>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            {% if user.is_authenticated %}
+                                {% if cycle.available %}
+                                    <a href="{% url 'book_cycle' cycle.id %}" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg block text-center transition-colors duration-300 font-semibold">
+                                        <i class="fas fa-calendar-plus mr-2"></i>Book This Cycle
+                                    </a>
+                                {% else %}
+                                    <button disabled class="w-full bg-gray-500 text-white py-3 rounded-lg block text-center font-semibold cursor-not-allowed">
+                                        <i class="fas fa-ban mr-2"></i>Currently Unavailable
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'login' %}" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-3 rounded-lg block text-center transition-colors duration-300 font-semibold">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Login to Book
+                                </a>
+                            {% endif %}
+                            
+                            <button onclick="showCycleDetails('{{ cycle.name }}', '{{ cycle.model }}', '{{ cycle.description }}', '{{ cycle.rent_per_hour }}')" 
+                                    class="w-full border-2 border-white/30 hover:bg-white/10 text-white py-3 rounded-lg transition-all duration-300 font-semibold">
+                                <i class="fas fa-info-circle mr-2"></i>View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-20">
+                <div class="glass-effect rounded-xl p-12 max-w-md mx-auto">
+                    <i class="fas fa-bicycle text-6xl text-white/50 mb-6"></i>
+                    <h3 class="text-2xl font-semibold text-white mb-4">No Cycles Available</h3>
+                    <p class="text-white/80">
+                        We're currently updating our fleet. Please check back soon for available cycles!
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Cycle Details Modal -->
+<div id="cycleModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-effect rounded-xl p-8 max-w-md w-full">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-white">Cycle Details</h3>
+            <button onclick="closeCycleModal()" class="text-white hover:text-gray-300">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        
+        <div id="modalContent" class="text-white">
+            <!-- Content will be populated by JavaScript -->
+        </div>
+        
+        <button onclick="closeCycleModal()" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg mt-6 transition-colors duration-300">
+            Close
+        </button>
+    </div>
+</div>
+
+<!-- Call to Action -->
+{% if not user.is_authenticated %}
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <div class="glass-effect rounded-2xl p-12 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Ride?</h2>
+            <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                Create an account to start booking cycles and join the Rentrip Cycle Rentals community today!
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="{% url 'signup' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-300">
+                    <i class="fas fa-user-plus mr-2"></i>Sign Up Now
+                </a>
+                <a href="{% url 'login' %}" class="border-2 border-white/30 hover:bg-white/10 px-8 py-4 rounded-lg text-white font-semibold text-lg transition-all duration-300">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Already Have Account?
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<script>
+function showCycleDetails(name, model, description, price) {
+    const modal = document.getElementById('cycleModal');
+    const content = document.getElementById('modalContent');
+    
+    content.innerHTML = `
+        <div class="space-y-4">
+            <div>
+                <h4 class="font-semibold text-lg mb-2">Name</h4>
+                <p class="text-white/80">${name}</p>
+            </div>
+            <div>
+                <h4 class="font-semibold text-lg mb-2">Model</h4>
+                <p class="text-white/80">${model}</p>
+            </div>
+            ${description ? `
+            <div>
+                <h4 class="font-semibold text-lg mb-2">Description</h4>
+                <p class="text-white/80">${description}</p>
+            </div>
+            ` : ''}
+            <div>
+                <h4 class="font-semibold text-lg mb-2">Rental Price</h4>
+                <p class="text-blue-300 text-2xl font-bold">$${price}/hour</p>
+            </div>
+        </div>
+    `;
+    
+    modal.classList.remove('hidden');
+}
+
+function closeCycleModal() {
+    document.getElementById('cycleModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('cycleModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeCycleModal();
+    }
+});
+</script>
+{% endblock %}

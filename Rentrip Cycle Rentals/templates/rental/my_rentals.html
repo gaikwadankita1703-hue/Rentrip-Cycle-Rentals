@@ -1,0 +1,106 @@
+{% extends 'rental/base.html' %}
+
+
+{% block title %}My Rentals - PedalPower Rentals{% endblock %}
+
+{% block content %}
+<section class="py-20">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">My Rentals</h1>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto">
+                Track your current and past cycle rentals. Manage your active bookings and view your rental history.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="pb-20">
+    <div class="container mx-auto px-6">
+        {% if rentals %}
+            <div class="space-y-6">
+                {% for rental in rentals %}
+                <div class="glass-effect rounded-xl p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-center">
+                        <!-- Cycle Info -->
+                        <div class="lg:col-span-2">
+                            <div class="flex items-center space-x-4">
+                                {% if rental.cycle.image %}
+                                    <img src="{{ rental.cycle.image.url }}" alt="{{ rental.cycle.name }}" class="w-20 h-20 object-cover rounded-lg">
+                                {% else %}
+                                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-bicycle text-2xl text-white"></i>
+                                    </div>
+                                {% endif %}
+                                
+                                <div>
+                                    <h3 class="text-xl font-semibold text-white">{{ rental.cycle.name }}</h3>
+                                    <p class="text-white/80">{{ rental.cycle.model }}</p>
+                                    <p class="text-white/60 text-sm">${{ rental.cycle.rent_per_hour }}/hour</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rental Details -->
+                        <div>
+                            <div class="space-y-2">
+                                <div>
+                                    <span class="text-white/60 text-sm">Start Time:</span>
+                                    <p class="text-white font-medium">{{ rental.start_time|date:"M d, Y H:i" }}</p>
+                                </div>
+                                
+                                {% if rental.end_time %}
+                                    <div>
+                                        <span class="text-white/60 text-sm">End Time:</span>
+                                        <p class="text-white font-medium">{{ rental.end_time|date:"M d, Y H:i" }}</p>
+                                    </div>
+                                {% endif %}
+                                
+                                {% if rental.total_cost %}
+                                    <div>
+                                        <span class="text-white/60 text-sm">Total Cost:</span>
+                                        <p class="text-green-300 font-bold text-lg">${{ rental.total_cost }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Status & Actions -->
+                        <div class="text-center">
+                            {% if rental.is_active %}
+                                <span class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 inline-block">
+                                    <i class="fas fa-play-circle mr-1"></i>Active Rental
+                                </span>
+                                <div>
+                                    <a href="{% url 'return_cycle' rental.id %}" 
+                                       class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors duration-300 font-semibold">
+                                        <i class="fas fa-undo mr-2"></i>Return Cycle
+                                    </a>
+                                </div>
+                            {% else %}
+                                <span class="bg-gray-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                                    <i class="fas fa-check-circle mr-1"></i>Completed
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-20">
+                <div class="glass-effect rounded-xl p-12 max-w-md mx-auto">
+                    <i class="fas fa-history text-6xl text-white/50 mb-6"></i>
+                    <h3 class="text-2xl font-semibold text-white mb-4">No Rentals Yet</h3>
+                    <p class="text-white/80 mb-6">
+                        You haven't rented any cycles yet. Start exploring our collection and book your first ride!
+                    </p>
+                    <a href="{% url 'cycles' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors duration-300 inline-block font-semibold">
+                        <i class="fas fa-bicycle mr-2"></i>Browse Cycles
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

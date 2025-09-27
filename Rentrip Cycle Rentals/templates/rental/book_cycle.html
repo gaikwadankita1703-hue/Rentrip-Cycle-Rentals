@@ -1,0 +1,109 @@
+{% extends 'rental/base.html' %}
+
+
+{% block title %}Book {{ cycle.name }} - PedalPower Rentals{% endblock %}
+
+{% block content %}
+<section class="min-h-screen py-20">
+    <div class="container mx-auto px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Cycle Details -->
+                <div class="glass-effect rounded-2xl p-8">
+                    {% if cycle.image %}
+                        <img src="{{ cycle.image.url }}" alt="{{ cycle.name }}" class="w-full h-64 object-cover rounded-lg mb-6">
+                    {% else %}
+                        <div class="w-full h-64 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-bicycle text-8xl text-white"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <h1 class="text-3xl font-bold text-white mb-4">{{ cycle.name }}</h1>
+                    <p class="text-xl text-white/80 mb-4">{{ cycle.model }}</p>
+                    
+                    {% if cycle.description %}
+                        <p class="text-white/70 mb-6">{{ cycle.description }}</p>
+                    {% endif %}
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-white/10 rounded-lg">
+                            <span class="text-white font-semibold">Rental Rate</span>
+                            <span class="text-2xl font-bold text-blue-300">${{ cycle.rent_per_hour }}/hour</span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-white/10 rounded-lg">
+                            <span class="text-white font-semibold">Availability</span>
+                            {% if cycle.available %}
+                                <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                                    <i class="fas fa-check-circle mr-1"></i>Available
+                                </span>
+                            {% else %}
+                                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                                    <i class="fas fa-times-circle mr-1"></i>Not Available
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Booking Form -->
+                <div class="glass-effect rounded-2xl p-8">
+                    <h2 class="text-3xl font-bold text-white mb-6">Book This Cycle</h2>
+                    
+                    {% if cycle.available %}
+                        <form method="post" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <div>
+                                <label for="{{ form.start_time.id_for_label }}" class="block text-white font-medium mb-2">
+                                    <i class="fas fa-calendar-alt mr-2"></i>Start Date & Time
+                                </label>
+                                {{ form.start_time }}
+                                {% if form.start_time.errors %}
+                                    <div class="text-red-400 text-sm mt-1">{{ form.start_time.errors.0 }}</div>
+                                {% endif %}
+                                <p class="text-white/60 text-sm mt-1">Select when you want to start your rental</p>
+                            </div>
+                            
+                            <div class="bg-white/10 rounded-lg p-4">
+                                <h3 class="text-white font-semibold mb-3">What's Included:</h3>
+                                <ul class="text-white/80 space-y-2">
+                                    <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Safety helmet</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Cycle lock</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Basic repair kit</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Insurance coverage</li>
+                                    <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Route maps</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-blue-500/20 border border-blue-400/30 rounded-lg p-4">
+                                <h3 class="text-white font-semibold mb-2">Important Notes:</h3>
+                                <ul class="text-white/80 text-sm space-y-1">
+                                    <li>• You can return the cycle anytime after your start time</li>
+                                    <li>• Charges are calculated based on actual usage time</li>
+                                    <li>• Late returns may incur additional fees</li>
+                                    <li>• Contact support for any issues during your rental</li>
+                                </ul>
+                            </div>
+                            
+                            <button type="submit" 
+                                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-lg font-semibold text-lg transition-colors duration-300 transform hover:scale-105">
+                                <i class="fas fa-calendar-check mr-2"></i>Confirm Booking
+                            </button>
+                        </form>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-6xl text-red-400 mb-4"></i>
+                            <h3 class="text-2xl font-semibold text-white mb-4">Cycle Not Available</h3>
+                            <p class="text-white/80 mb-6">This cycle is currently rented by another customer.</p>
+                            <a href="{% url 'cycles' %}" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors duration-300 inline-block">
+                                <i class="fas fa-search mr-2"></i>Find Other Cycles
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

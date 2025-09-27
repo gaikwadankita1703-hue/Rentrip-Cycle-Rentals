@@ -1,0 +1,346 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        Rentrip Cycle Rentals
+      {% endblock %}
+    </title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        --primary-color: #dd1010;
+        --secondary-color: #0821e4;
+        --success-color: #1cc88a;
+        --info-color: #eb0fc6;
+        --warning-color: #f6c23e;
+        --danger-color: #e74a3b;
+      }
+      
+      body {
+        background: url("{% static 'images/bg.jpeg' %}") no-repeat center center;
+        font-family: 'Nunito', sans-serif;
+        background-color: #c0641a;
+      }
+      
+      .navbar {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        padding: 1rem 0;
+      }
+      
+      .navbar-brand {
+        font-weight: bold;
+        color: rgb(202, 18, 202) !important;
+        font-size: 1.5rem;
+      }
+      
+      .nav-link {
+        color: rgba(233, 141, 21, 0.8) !important;
+        transition: color 0.3s;
+      }
+      
+      .nav-link:hover {
+        color: white !important;
+      }
+      
+      .hero-section {
+        background-size: cover;
+        color: white;
+        padding: 4rem 0;
+        margin-bottom: 2rem;
+      }
+      
+      .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: transform 0.3s;
+      }
+      
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      
+      .card-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        border-radius: 10px 10px 0 0 !important;
+      }
+      
+      .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        border: none;
+      }
+      
+      .btn-primary:hover {
+        background: linear-gradient(135deg, var(--info-color), var(--primary-color));
+      }
+      
+      .footer {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+        color: white;
+        padding: 2rem 0;
+        margin-top: 3rem;
+      }
+      
+      .alert {
+        border-radius: 10px;
+      }
+      
+      /* Custom animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out;
+      }
+      
+      /* Legacy classes for compatibility */
+      .gradient-bg {
+        background: linear-gradient(135deg, var(--primary-color), var(--info-color));
+      }
+      
+      .glass-effect {
+        background: rgba(158, 7, 7, 0.493);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(184, 11, 161, 0.25);
+      }
+      
+      .hover-glow:hover {
+        box-shadow: 0 0 30px rgba(247, 182, 4, 0.192);
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+      }
+      
+      .cycle-card {
+        transition: all 0.3s ease;
+      }
+      
+      .cycle-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+      
+      .message-alert {
+        animation: slideIn 0.5s ease-out;
+      }
+      
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="glass-effect fixed w-full top-0 z-50">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <!-- Logo -->
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-bicycle text-3xl text-white"></i>
+            <span class="text-2xl font-bold text-white">Rentrip Cycle Rentals</span>
+          </div>
+
+          <!-- Desktop Menu -->
+          <div class="hidden md:flex items-center space-x-8">
+            <a href="{% url 'home' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Home</a>
+            <a href="{% url 'about' %}" class="text-white hover:text-blue-300 transition-colors duration-300">About</a>
+            <a href="{% url 'cycles' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Cycles</a>
+            <a href="{% url 'contact' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Contact</a>
+
+            {% if user.is_authenticated %}
+              <a href="{% url 'my_rentals' %}" class="text-white hover:text-blue-300 transition-colors duration-300">My Rentals</a>
+              <div class="flex items-center space-x-4">
+                <span class="text-white">Hello, {{ user.first_name }}!</span>
+                <form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg">
+        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+    </button>
+</form>
+              </div>
+            {% else %}
+              <a href="{% url 'auth' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Login / Sign Up</a>
+            {% endif %}
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button class="md:hidden text-white" onclick="toggleMobileMenu()"><i class="fas fa-bars text-2xl"></i></button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4">
+          <div class="flex flex-col space-y-4">
+            <a href="{% url 'home' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Home</a>
+            <a href="{% url 'about' %}" class="text-white hover:text-blue-300 transition-colors duration-300">About</a>
+            <a href="{% url 'cycles' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Cycles</a>
+            <a href="{% url 'contact' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Contact</a>
+
+            {% if user.is_authenticated %}
+              <a href="{% url 'my_rentals' %}" class="text-white hover:text-blue-300 transition-colors duration-300">My Rentals</a>
+              <span class="text-white">Hello, {{ user.first_name }}!</span>
+              <a href="{% url 'logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors duration-300 text-center"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+            {% else %}
+              <a href="{% url 'auth' %}" class="text-white hover:text-blue-300 transition-colors duration-300">Login / Sign Up</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+      <div class="fixed top-20 right-4 z-50 space-y-2">
+        {% for message in messages %}
+          <div class="message-alert glass-effect px-6 py-4 rounded-lg text-white max-w-sm
+                    {% if message.tags == 'success' %}
+              
+              border-green-400
+
+            {% elif message.tags == 'error' %}
+              
+              border-red-400
+
+            {% else %}
+              
+              border-blue-400
+
+            {% endif %}">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                {% if message.tags == 'success' %}
+                  <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                {% elif message.tags == 'error' %}
+                  <i class="fas fa-exclamation-circle text-red-400 mr-2"></i>
+                {% else %}
+                  <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+              </div>
+              <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-300"><i class="fas fa-times"></i></button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="pt-20">
+      {% block content %}
+
+      {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-effect mt-20">
+      <div class="container mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- Company Info -->
+          <div class="col-span-1 md:col-span-2">
+            <div class="flex items-center space-x-2 mb-4">
+              <i class="fas fa-bicycle text-3xl text-white"></i>
+              <span class="text-2xl font-bold text-white">Rentrip Cycle Rentals</span>
+            </div>
+            <p class="text-white/80 mb-4">Your trusted partner for cycle rentals. Explore the city with our premium collection of cycles.</p>
+            <div class="flex space-x-4">
+              <a href="#" class="text-white hover:text-blue-300 transition-colors duration-300"><i class="fab fa-facebook text-2xl"></i></a>
+              <a href="#" class="text-white hover:text-blue-300 transition-colors duration-300"><i class="fab fa-twitter text-2xl"></i></a>
+              <a href="#" class="text-white hover:text-blue-300 transition-colors duration-300"><i class="fab fa-instagram text-2xl"></i></a>
+            </div>
+          </div>
+
+          <!-- Quick Links -->
+          <div>
+            <h3 class="text-white font-semibold mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="{% url 'home' %}" class="text-white/80 hover:text-white transition-colors duration-300">Home</a>
+              </li>
+              <li>
+                <a href="{% url 'about' %}" class="text-white/80 hover:text-white transition-colors duration-300">About</a>
+              </li>
+              <li>
+                <a href="{% url 'cycles' %}" class="text-white/80 hover:text-white transition-colors duration-300">Cycles</a>
+              </li>
+              <li>
+                <a href="{% url 'contact' %}" class="text-white/80 hover:text-white transition-colors duration-300">Contact</a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Contact Info -->
+          <div>
+            <h3 class="text-white font-semibold mb-4">Contact Info</h3>
+            <ul class="space-y-2 text-white/80">
+              <li>
+                <i class="fas fa-phone mr-2"></i>+1 (555) 123-4567
+              </li>
+              <li>
+                <i class="fas fa-envelope mr-2"></i>info@pedalpower.com
+              </li>
+              <li>
+                <i class="fas fa-map-marker-alt mr-2"></i>123 Cycle Street, City
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="border-t border-white/20 mt-8 pt-8 text-center">
+          <p class="text-white/80">&copy; 2024 Rentrip Cycle Rentals. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu')
+        menu.classList.toggle('hidden')
+      }
+      
+      // Auto-hide messages after 5 seconds
+      setTimeout(() => {
+        const messages = document.querySelectorAll('.message-alert')
+        messages.forEach((message) => {
+          message.style.animation = 'slideOut 0.5s ease-in forwards'
+          setTimeout(() => message.remove(), 500)
+        })
+      }, 5000)
+      
+      // Add slideOut animation
+      const style = document.createElement('style')
+      style.textContent = `
+                        @keyframes slideOut {
+                            to { transform: translateX(100%); opacity: 0; }
+                        }
+                    `
+      document.head.appendChild(style)
+    </script>
+  </body>
+</html>
