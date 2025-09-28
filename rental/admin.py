@@ -93,6 +93,6 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
 
 # Customize admin site
-admin.site.site_header = "PedalPower Rentals Admin"
-admin.site.site_title = "PedalPower Admin"
-admin.site.index_title = "Welcome to PedalPower Administration"
+admin.site.site_header = " Rentrip Cycle Rentals Admin"
+admin.site.site_title = " Rentrip Cycle Rentals Admin"
+admin.site.index_title = "Welcome to Rentrip Cycle Rentals Administration"

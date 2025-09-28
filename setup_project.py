@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Setup script for PedalPower Rentals Django project
+Setup script for Rentrip-Cycle-Rentals Django project
 Run this script to initialize the database and create sample data
 """
 
@@ -14,24 +14,24 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'bikerental.settings')
 django.setup()
 
 from django.contrib.auth.models import User
-from rental.models import Bike, Customer, ContactMessage
+from rental.models import Cycle, Customer, ContactMessage
 
 def create_sample_data():
-    """Create sample bikes and admin user"""
+    """Create sample cycles and admin user"""
     
     # Create superuser if it doesn't exist
     if not User.objects.filter(username='admin').exists():
         User.objects.create_superuser(
             username='admin',
-            email='admin@pedalpower.com',
+            email='admin@rentrip.com',
             password='admin123',
             first_name='Admin',
             last_name='User'
         )
         print("✓ Created admin user (username: admin, password: admin123)")
     
-    # Create sample bikes
-    sample_bikes = [
+    # Create sample cycles
+    sample_cycles = [
         {
             'name': 'City Cruiser Pro',
             'model': 'Urban Explorer 2024',
@@ -42,60 +42,60 @@ def create_sample_data():
         {
             'name': 'Mountain Beast',
             'model': 'Trail Master X1',
-            'description': 'Heavy-duty mountain bike designed for off-road adventures. Full suspension, 21-speed gear system, and all-terrain tires.',
+            'description': 'Heavy-duty mountain cycle designed for off-road adventures. Full suspension, 21-speed gear system, and all-terrain tires.',
             'rent_per_hour': 18.99,
             'available': True
         },
         {
             'name': 'Electric Glide',
-            'model': 'E-Bike Deluxe',
-            'description': 'Electric-powered bike with 50km range. Perfect for longer distances with minimal effort. USB charging port included.',
+            'model': 'E-Cycle Deluxe',
+            'description': 'Electric-powered cycle with 50km range. Perfect for longer distances with minimal effort. USB charging port included.',
             'rent_per_hour': 25.99,
             'available': True
         },
         {
             'name': 'Speed Demon',
             'model': 'Racing Pro 2024',
-            'description': 'Lightweight racing bike for speed enthusiasts. Carbon fiber frame, drop handlebars, and 16-speed transmission.',
+            'description': 'Lightweight racing cycle for speed enthusiasts. Carbon fiber frame, drop handlebars, and 16-speed transmission.',
             'rent_per_hour': 22.99,
             'available': True
         },
         {
             'name': 'Family Tandem',
             'model': 'Double Rider',
-            'description': 'Fun tandem bike for couples or friends. Synchronized pedaling system with comfortable dual seating.',
+            'description': 'Fun tandem cycle for couples or friends. Synchronized pedaling system with comfortable dual seating.',
             'rent_per_hour': 16.99,
-            'available': False  # One bike rented for demo
+            'available': False  # One rented for demo
         },
         {
             'name': 'Vintage Classic',
             'model': 'Retro Charm 1960',
-            'description': 'Classic vintage-style bike with modern safety features. Leather seat, chrome details, and 3-speed hub.',
+            'description': 'Classic vintage-style cycle with modern safety features. Leather seat, chrome details, and 3-speed hub.',
             'rent_per_hour': 14.99,
             'available': True
         }
     ]
     
-    for bike_data in sample_bikes:
-        bike, created = Bike.objects.get_or_create(
-            name=bike_data['name'],
-            defaults=bike_data
+    for cycle_data in sample_cycles:
+        cycle, created = Cycle.objects.get_or_create(
+            name=cycle_data['name'],
+            defaults=cycle_data
         )
         if created:
-            print(f"✓ Created bike: {bike.name}")
+            print(f"✓ Created cycle: {cycle.name}")
     
     # Create sample contact message
     if not ContactMessage.objects.exists():
         ContactMessage.objects.create(
             name='John Doe',
             email='john@example.com',
-            message='Hi! I\'m interested in your bike rental service. Do you offer group discounts for corporate events?'
+            message='Hi! I\'m interested in your cycle rental service. Do you offer group discounts for corporate events?'
         )
         print("✓ Created sample contact message")
 
 def main():
     """Main setup function"""
-    print("🚴 Setting up PedalPower Rentals...")
+    print("🚴 Setting up Rentrip-Cycle-Rentals...")
     print("=" * 50)
     
     # Run migrations
@@ -115,9 +115,9 @@ def main():
     print("1. Run: python manage.py runserver")
     print("2. Visit: http://127.0.0.1:8000")
     print("3. Admin panel: http://127.0.0.1:8000/admin")
-    print("   - Username: admin")
-    print("   - Password: admin123")
-    print("\n🚀 Your PedalPower Rentals website is ready!")
+    print("   - Username: aditya")
+    print("   - Password: adi")
+    print("\n🚀 Your Rentrip-Cycle-Rentals website is ready!")
 
 if __name__ == '__main__':
     main()
