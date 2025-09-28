@@ -1,1 +1,2 @@
-web: gunicorn cyclerental.wsgi 
+web: gunicorn cyclerental.wsgi:application --log-file -
+
